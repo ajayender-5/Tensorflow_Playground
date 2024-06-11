@@ -4,10 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mlxtend.plotting import plot_decision_regions
 from tensorflow.keras.models import Model
-from keras.layers import Dense, Input
-from keras.optimizers import Adam
+from tensorflow.keras.layers import Dense, Input
+from tensorflow.keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
-import os
 
 # Set page config
 st.set_page_config(page_title="Neural Network Playground", page_icon="🧠", layout="wide")
@@ -30,16 +29,15 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 plt.rcParams['figure.figsize'] = [7, 4]  # Decrease the default figure size
 
 # Specify the path to the model folder relative to the script's directory
-
 model_file_paths = {
-    "ushape": playground/resources/1.ushape.csv,
-    "concerticcir1": playground/resources/2.concerticcir1.csv,
-    "concertriccir2": playground/resources/3.concertriccir2.csv,
-    "linearsep": playground/resources/4.linearsep.csv,
-    "outlier": playground/resources/5.outlier.csv,
-    "overlap": playground/resources/6.overlap.csv,
-    "xor": playground/resources/7.xor.csv,
-    "twospirals": playground/resources/8.twospirals.csv
+    "ushape": 'playground/resources/1.ushape.csv',
+    "concerticcir1": 'playground/resources/2.concerticcir1.csv',
+    "concertriccir2": 'playground/resources/3.concertriccir2.csv',
+    "linearsep": 'playground/resources/4.linearsep.csv',
+    "outlier": 'playground/resources/5.outlier.csv',
+    "overlap": 'playground/resources/6.overlap.csv',
+    "xor": 'playground/resources/7.xor.csv',
+    "twospirals": 'playground/resources/8.twospirals.csv'
 }
 
 def load_data(file_path):
