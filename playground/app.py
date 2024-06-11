@@ -25,11 +25,9 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Get the absolute path to the current script
-script_path = os.path.abspath(__file__)
-
-# Set the working directory to the script's directory
-os.chdir(os.path.dirname(script_path))
+# Set plot size globally
+st.set_option('deprecation.showPyplotGlobalUse', False)
+plt.rcParams['figure.figsize'] = [7, 4]  # Decrease the default figure size
 
 # Specify the path to the model folder relative to the script's directory
 model_folder = "resources"
@@ -54,33 +52,36 @@ model_file_paths = {
     "twospirals": model_file_path8
 }
 
-
 def load_data(file_path):
     return pd.read_csv(file_path)
 
-
-def plot_dataset(dataset_path):
-    dataset = load_data(dataset_path)
-    X = dataset.iloc[:, :-1].values
-    Y = dataset.iloc[:, -1].values
-    fig, ax = plt.subplots(figsize=(4,4))
-    ax.scatter(X[:, 0], X[:, 1], c=Y, cmap='viridis', edgecolors='k')
-    ax.set_title('Dataset')
-    ax.set_xlabel('Feature 1')
-    ax.set_ylabel('Feature 2')
+def plot_datasets():
+    fig, axes = plt.subplots(2, 4, figsize=(16, 7))  # Decreased figure size for datasets plot
+    dataset_names = list(model_file_paths.keys())
+    for i, (dataset_name, dataset_path) in enumerate(model_file_paths.items()):
+        row = i // 4
+        col = i % 4
+        dataset = load_data(dataset_path)
+        X = dataset.iloc[:, :-1].values
+        Y = dataset.iloc[:, -1].values
+        ax = axes[row, col]
+        ax.scatter(X[:, 0], X[:, 1], c=Y, cmap='viridis', edgecolors='k')
+        ax.set_title(f'Dataset: {dataset_name}')
+        ax.set_xlabel('Feature 1')
+        ax.set_ylabel('Feature 2')
+        ax.set_xticks([])
+        ax.set_yticks([])
+    plt.tight_layout()
     st.pyplot(fig)
-
-
+    return st.selectbox('Select Dataset:', dataset_names)
 
 def app():
     st.title('A Neural Network Playground')
 
     st.sidebar.title("Configuration")
 
-    # Plot dataset in the sidebar
     st.sidebar.subheader("Dataset Preview")
-    dataset_choice = st.sidebar.radio("Choose a dataset", list(model_file_paths.keys()))
-    plot_dataset(model_file_paths[dataset_choice])
+    dataset_choice = plot_datasets()
 
     num_hidden_layers = st.sidebar.slider("Number of Hidden Layers", 1, 5, 1, key='num_hidden_layers')
     epochs = st.sidebar.slider("Select number of epochs", 100, 1000, 100, key='epochs')
@@ -88,14 +89,16 @@ def app():
     hidden_layers = []
 
     for i in range(num_hidden_layers):
-        st.sidebar.markdown(f"### Hidden Layer {i+1}")
-        units = st.sidebar.slider(f"Number of units for hidden layer {i+1}", 1, 10, 1, key=f"units_{i}")
-        activation = st.sidebar.selectbox(f"Activation function for hidden layer {i+1}", ['tanh', 'sigmoid', "relu", "linear"],
+        st.sidebar.markdown(f"### Hidden Layer {i + 1}")
+        units = st.sidebar.slider(f"Number of units for hidden layer {i + 1}", 1, 10, 1, key=f"units_{i}")
+        activation = st.sidebar.selectbox(f"Activation function for hidden layer {i + 1}",
+                                           ['tanh', 'sigmoid', "relu", "linear"],
                                            key=f"activation_{i}")
         hidden_layers.append((units, activation))
 
     if st.sidebar.button("Train Model", key='train_button'):
         dataset_path = model_file_paths[dataset_choice]
+
         # Load dataset
         dataset = load_data(dataset_path)
 
@@ -117,7 +120,6 @@ def app():
             model.compile(optimizer=Adam(learning_rate=lr), loss='binary_crossentropy', metrics=['accuracy'])
             return model
 
-
         model = build_model()
 
         history = model.fit(X_train, Y_train, epochs=epochs, validation_data=(X_test, Y_test), verbose=0)
@@ -131,7 +133,7 @@ def app():
 
         # Plot the output layer decision region
         st.subheader('Decision Region for the Output Layer')
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(6, 3))  # Decreased figure size for decision region plot
         plot_decision_regions(X, Y, clf=model, ax=ax)
         st.pyplot(fig)
 
@@ -144,11 +146,10 @@ def app():
             num_neurons = layer_output.shape[1]
             for neuron_num in range(num_neurons):
                 neuron_model = Model(inputs=model.input, outputs=layer_output[:, neuron_num])
-                st.write(f"#### Hidden Layer {layer_num+1}, Neuron {neuron_num+1}")
-                fig, ax = plt.subplots()
+                st.write(f"#### Hidden Layer {layer_num + 1}, Neuron {neuron_num + 1}")
+                fig, ax = plt.subplots(figsize=(6, 3))  # Decreased figure size for neuron output plot
                 plot_decision_regions(X, Y, clf=neuron_model, ax=ax)
                 st.pyplot(fig)
-
 
 if __name__ == "__main__":
     app()
