@@ -30,26 +30,16 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 plt.rcParams['figure.figsize'] = [7, 4]  # Decrease the default figure size
 
 # Specify the path to the model folder relative to the script's directory
-model_folder = "resources"
-
-model_file_path1 = os.path.join(model_folder, '1.ushape.csv')
-model_file_path2 = os.path.join(model_folder, '2.concerticcir1.csv')
-model_file_path3 = os.path.join(model_folder, '3.concertriccir2.csv')
-model_file_path4 = os.path.join(model_folder, '4.linearsep.csv')
-model_file_path5 = os.path.join(model_folder, '5.outlier.csv')
-model_file_path6 = os.path.join(model_folder, '6.overlap.csv')
-model_file_path7 = os.path.join(model_folder, '7.xor.csv')
-model_file_path8 = os.path.join(model_folder, '8.twospirals.csv')
 
 model_file_paths = {
-    "ushape": model_file_path1,
-    "concerticcir1": model_file_path2,
-    "concertriccir2": model_file_path3,
-    "linearsep": model_file_path4,
-    "outlier": model_file_path5,
-    "overlap": model_file_path6,
-    "xor": model_file_path7,
-    "twospirals": model_file_path8
+    "ushape": playground/resources/1.ushape.csv,
+    "concerticcir1": playground/resources/2.concerticcir1.csv,
+    "concertriccir2": playground/resources/3.concertriccir2.csv,
+    "linearsep": playground/resources/4.linearsep.csv,
+    "outlier": playground/resources/5.outlier.csv,
+    "overlap": playground/resources/6.overlap.csv,
+    "xor": playground/resources/7.xor.csv,
+    "twospirals": playground/resources/8.twospirals.csv
 }
 
 def load_data(file_path):
